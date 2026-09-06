@@ -1,0 +1,16 @@
+{
+	"name": "yandex-disk-sync",
+	"version": "0.1.0",
+	"description": "Sync an Obsidian vault to Yandex Disk over WebDAV.",
+	"private": true,
+	"scripts": {
+		"dev": "node esbuild.config.mjs",
+		"build": "node esbuild.config.mjs production"
+	},
+	"devDependencies": {
+		"@types/node": "^20.11.0",
+		"esbuild": "^0.21.5",
+		"obsidian": "^1.5.7",
+		"typescript": "^5.4.5"
+	}
+}

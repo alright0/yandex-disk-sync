@@ -1,0 +1,42 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="matplotlib" />
+          <option value="pandas" />
+          <option value="aiohttp" />
+          <option value="alembic" />
+          <option value="argon2-cffi" />
+          <option value="asyncpg" />
+          <option value="bcrypt" />
+          <option value="celery" />
+          <option value="dawg-python" />
+          <option value="fastapi" />
+          <option value="flower" />
+          <option value="httpx" />
+          <option value="itsdangerous" />
+          <option value="jwt" />
+          <option value="kaleido" />
+          <option value="numpy" />
+          <option value="ollama" />
+          <option value="plotly" />
+          <option value="psutil" />
+          <option value="psycopg2" />
+          <option value="pyaml" />
+          <option value="pyjwt" />
+          <option value="pymorphy3" />
+          <option value="pytelegrambotapi" />
+          <option value="python-dotenv" />
+          <option value="redis" />
+          <option value="sqlalchemy" />
+          <option value="sqlalchemy-celery-beat" />
+          <option value="starlette-admin" />
+          <option value="uvicorn" />
+          <option value="watchdog" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

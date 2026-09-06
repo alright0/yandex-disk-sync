@@ -1,0 +1,22 @@
+.yds-dot {
+	display: inline-block;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	margin-left: 6px;
+	flex-shrink: 0;
+}
+
+.yds-dot[data-status="synced"] {
+	background-color: var(--color-green, #4caf50);
+	opacity: 0.55;
+}
+
+.yds-dot[data-status="pending"] {
+	background-color: var(--color-orange, #ff9800);
+}
+
+.yds-dot[data-status="unsynced"] {
+	background-color: var(--text-muted, #888888);
+	opacity: 0.7;
+}
