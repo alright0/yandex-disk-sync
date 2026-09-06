@@ -1,32 +1,30 @@
 # Yandex Disk Sync
 
-Плагин для Obsidian, который синхронизирует это хранилище (vault) с папкой на
+Плагин для Obsidian, который синхронизирует хранилище (vault) с папкой на
 Яндекс.Диске по протоколу WebDAV. Работает и на десктопе, и в мобильном
 Obsidian — вся сеть идёт через `requestUrl` из Obsidian API, без нативных
 зависимостей (не Node, не git, не ssh).
 
-Исходники этого плагина сознательно лежат **вне** хранилища (`E:\programming\pbase\yandex-disk-sync`,
-рядом с папкой `pbase`, а не внутри неё) — так они не путаются с самим
-хранилищем заметок и не гоняются им же через синхронизацию. `npm run build`
-сам раскладывает готовые `manifest.json`, `main.js` и `styles.css` в
-`pbase/.obsidian/plugins/yandex-disk-sync/` — эту папку руками не трогать,
-всё в ней генерируется отсюда.
-
 ## Установка
 
 ```
-cd yandex-disk-sync
 npm install
 npm run build
 ```
 
-Затем в Obsidian: Settings → Community plugins → включить "Yandex Disk Sync"
-(если плагина нет в списке — перезапустить Obsidian).
+`npm run build` кладёт собранный `main.js` рядом с `manifest.json` и
+`styles.css` в корне проекта. Скопируйте (или слинкуйте) эту папку в
+`<vault>/.obsidian/plugins/yandex-disk-sync/`, затем в Obsidian:
+Settings → Community plugins → включить "Yandex Disk Sync" (если плагина нет
+в списке — перезапустить Obsidian).
 
 Для разработки: `npm run dev` — esbuild пересобирает `main.js` при каждом
-изменении исходников и сразу кладёт его в `pbase/.obsidian/plugins/yandex-disk-sync/`,
-останется только перезагрузить плагин в Obsidian (Ctrl/Cmd+P → "Reload app
-without saving" или через плагин Hot-Reload).
+изменении исходников. Чтобы собирать сразу в папку плагина внутри vault,
+задайте переменную окружения `OBSIDIAN_PLUGIN_DIR`, указывающую на
+`<vault>/.obsidian/plugins/yandex-disk-sync/` — тогда `manifest.json` и
+`styles.css` копируются туда вместе с `main.js`. После пересборки останется
+перезагрузить плагин в Obsidian (Ctrl/Cmd+P → "Reload app without saving"
+или через плагин Hot-Reload).
 
 ## Настройка Яндекс.Диска
 
@@ -64,11 +62,8 @@ without saving" или через плагин Hot-Reload).
 - Синхронизируются только файлы самого хранилища (то, что видно в файловом
   дереве Obsidian). Папка `.obsidian/` (настройки, плагины, темы, хоткеи) не
   синхронизируется этим плагином — это сознательное решение ради
-  безопасности данных в v1. Раз этот репозиторий (`pbase`) и так уже
-  git-репозиторий с отслеживаемой `.obsidian/` — синхронизировать сами
-  настройки Obsidian между устройствами проще через git.
-- Только Yandex Disk. Ни Git, ни SSH — по вашей просьбе сознательно не
-  реализованы.
+  безопасности данных в v1.
+- Только Yandex Disk. Ни Git, ни SSH — сознательно не реализованы.
 - Список файлов на Диске плагин получает рекурсивным обходом папок
   (PROPFIND с Depth:1 на каждую вложенную папку). Для хранилища из тысяч
   файлов первая синхронизация может занять заметное время — это ограничение
@@ -81,29 +76,23 @@ without saving" или через плагин Hot-Reload).
 
 ## Структура проекта
 
-Две отдельные папки — исходники (этот репозиторий) и то, что реально
-запускает Obsidian:
+```
+yandex-disk-sync/
+├─ manifest.json
+├─ styles.css
+├─ package.json
+├─ tsconfig.json
+├─ esbuild.config.mjs        — собирает main.js (в корень проекта или в OBSIDIAN_PLUGIN_DIR)
+└─ src/
+   ├─ main.ts                — жизненный цикл плагина, команды, триггеры
+   ├─ settings.ts            — вкладка настроек
+   ├─ webdav.ts              — WebDAV-клиент для Яндекс.Диска
+   ├─ sync-engine.ts         — сравнение локального/удалённого состояния и применение изменений
+   ├─ explorer-status.ts     — точки статуса синхронизации в файловом дереве
+   ├─ hash.ts                — SHA-1 хэширование содержимого файлов
+   └─ path-utils.ts          — вспомогательные функции для путей
+```
 
-```
-E:\programming\pbase\
-├─ yandex-disk-sync/                    ← исходники (этот README здесь и лежит)
-│  ├─ manifest.json
-│  ├─ styles.css
-│  ├─ package.json
-│  ├─ tsconfig.json
-│  ├─ esbuild.config.mjs                — собирает main.js и копирует manifest/styles в vault
-│  └─ src/
-│     ├─ main.ts                        — жизненный цикл плагина, команды, триггеры
-│     ├─ settings.ts                    — вкладка настроек
-│     ├─ webdav.ts                      — WebDAV-клиент для Яндекс.Диска
-│     ├─ sync-engine.ts                 — сравнение локального/удалённого состояния и применение изменений
-│     ├─ explorer-status.ts             — точки статуса синхронизации в файловом дереве
-│     ├─ hash.ts                        — SHA-1 хэширование содержимого файлов
-│     └─ path-utils.ts                  — вспомогательные функции для путей
-│
-└─ pbase/.obsidian/plugins/yandex-disk-sync/  ← то, что грузит Obsidian (генерируется сборкой)
-   ├─ manifest.json                     ← копия из yandex-disk-sync/
-   ├─ styles.css                        ← копия из yandex-disk-sync/
-   ├─ main.js                           ← результат сборки
-   └─ data.json                         ← runtime-состояние плагина (логин, пароль, индекс синка) — не в git
-```
+Генерируется сборкой и не хранится в git: `main.js` (результат сборки) и
+`data.json` — runtime-состояние плагина в папке плагина внутри vault (логин,
+пароль, индекс синка).

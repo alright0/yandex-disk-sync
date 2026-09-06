@@ -1,3 +1,7 @@
+# Obsidian plugin build output
+/main.js
+/data.json
+
 # Logs
 logs
 *.log
